@@ -31,6 +31,8 @@ public partial class BdatosContext : DbContext
 
     public virtual DbSet<Precio> Precios { get; set; }
 
+    public virtual DbSet<Tabla> Tablas { get; set; }
+
     public virtual DbSet<Ubigeo> Ubigeos { get; set; }
 
     public virtual DbSet<Vemaest> Vemaests { get; set; }
@@ -1181,6 +1183,47 @@ public partial class BdatosContext : DbContext
                 .IsFixedLength()
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS")
                 .HasColumnName("PRE_UNIDAD");
+        });
+
+        modelBuilder.Entity<Tabla>(entity =>
+        {
+            entity.HasKey(e => new { e.TabCodcia, e.TabTipreg, e.TabNumtab }).HasName("PK_TABLAS_1__13");
+
+            entity.ToTable("TABLAS");
+
+            entity.Property(e => e.TabCodcia)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("TAB_CODCIA");
+            entity.Property(e => e.TabTipreg).HasColumnName("TAB_TIPREG");
+            entity.Property(e => e.TabNumtab).HasColumnName("TAB_NUMTAB");
+            entity.Property(e => e.TabCodart)
+                .HasColumnType("numeric(8, 0)")
+                .HasColumnName("TAB_CODART");
+            entity.Property(e => e.TabCodclie)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("TAB_CODCLIE");
+            entity.Property(e => e.TabContable2)
+                .HasMaxLength(12)
+                .IsUnicode(false)
+                .HasDefaultValue(" ")
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("TAB_CONTABLE2");
+            entity.Property(e => e.TabNomcorto)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("TAB_NOMCORTO");
+            entity.Property(e => e.TabNomlargo)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("TAB_NOMLARGO");
         });
 
         modelBuilder.Entity<Ubigeo>(entity =>

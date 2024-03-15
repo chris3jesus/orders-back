@@ -19,9 +19,21 @@ public partial class BdatosContext : DbContext
 
     public virtual DbSet<Articulo> Articulos { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=localhost;Database=BDATOS;Trusted_Connection=true;TrustServerCertificate=True;");
+    public virtual DbSet<Cliente> Clientes { get; set; }
+
+    public virtual DbSet<Clienteped> Clientepeds { get; set; }
+
+    public virtual DbSet<Detpedido> Detpedidos { get; set; }
+
+    public virtual DbSet<Dircli> Dirclis { get; set; }
+
+    public virtual DbSet<Pedidoapp> Pedidoapps { get; set; }
+
+    public virtual DbSet<Precio> Precios { get; set; }
+
+    public virtual DbSet<Ubigeo> Ubigeos { get; set; }
+
+    public virtual DbSet<Vemaest> Vemaests { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -440,6 +452,963 @@ public partial class BdatosContext : DbContext
                 .HasDefaultValue(0m)
                 .HasColumnType("numeric(13, 4)")
                 .HasColumnName("ARM_STOCK_INI");
+        });
+
+        modelBuilder.Entity<Cliente>(entity =>
+        {
+            entity.HasKey(e => new { e.CliCodclie, e.CliCodcia, e.CliCp });
+
+            entity.ToTable("CLIENTES");
+
+            entity.HasIndex(e => new { e.CliCodclie, e.CliCp, e.CliNombre }, "CLIENTES26");
+
+            entity.HasIndex(e => new { e.CliCodclie, e.CliCp, e.CliNombre, e.CliCodcia, e.CliNombreEmpresa, e.CliCasaZona, e.CliCasaSubzona, e.CliRucEsposo, e.CliGrupo, e.CliDepaCasa }, "CLIENTES7");
+
+            entity.HasIndex(e => new { e.CliCodclie, e.CliCodcia, e.CliCp }, "_dta_index_CLIENTES_5_1312723729__K1_K2_K3_69");
+
+            entity.Property(e => e.CliCodclie)
+                .HasColumnType("numeric(8, 0)")
+                .HasColumnName("CLI_CODCLIE");
+            entity.Property(e => e.CliCodcia)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_CODCIA");
+            entity.Property(e => e.CliCp)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_CP");
+            entity.Property(e => e.Capital).HasColumnType("decimal(12, 2)");
+            entity.Property(e => e.Cli123)
+                .HasColumnType("numeric(1, 0)")
+                .HasColumnName("CLI_123");
+            entity.Property(e => e.CliAm)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("CLI_AM");
+            entity.Property(e => e.CliAp)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("CLI_AP");
+            entity.Property(e => e.CliAuto1)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_AUTO1");
+            entity.Property(e => e.CliAuto2)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_AUTO2");
+            entity.Property(e => e.CliAutoavaluo)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_AUTOAVALUO");
+            entity.Property(e => e.CliCanal)
+                .HasDefaultValue(0)
+                .HasColumnName("CLI_CANAL");
+            entity.Property(e => e.CliCasa1)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_CASA1");
+            entity.Property(e => e.CliCasa2)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_CASA2");
+            entity.Property(e => e.CliCasaDirec)
+                .HasMaxLength(80)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_CASA_DIREC");
+            entity.Property(e => e.CliCasaNum)
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("CLI_CASA_NUM");
+            entity.Property(e => e.CliCasaSubzona).HasColumnName("CLI_CASA_SUBZONA");
+            entity.Property(e => e.CliCasaZona).HasColumnName("CLI_CASA_ZONA");
+            entity.Property(e => e.CliCfinal)
+                .HasDefaultValue(0)
+                .HasColumnName("CLI_CFINAL");
+            entity.Property(e => e.CliCiaRef)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_CIA_REF");
+            entity.Property(e => e.CliCodart)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_CODART");
+            entity.Property(e => e.CliCodven)
+                .HasDefaultValue(0)
+                .HasColumnName("CLI_CODVEN");
+            entity.Property(e => e.CliContacto)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .HasColumnName("CLI_CONTACTO");
+            entity.Property(e => e.CliCorreo)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .HasColumnName("CLI_CORREO");
+            entity.Property(e => e.CliCorreo1)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .HasColumnName("CLI_CORREO1");
+            entity.Property(e => e.CliCorreo2)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .HasColumnName("CLI_CORREO2");
+            entity.Property(e => e.CliCorreo3)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .HasColumnName("CLI_CORREO3");
+            entity.Property(e => e.CliCuentaContab)
+                .HasMaxLength(12)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_CUENTA_CONTAB");
+            entity.Property(e => e.CliCuentaContab2)
+                .HasMaxLength(12)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_CUENTA_CONTAB2");
+            entity.Property(e => e.CliCuentaContab22)
+                .HasMaxLength(12)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_CUENTA_CONTAB22");
+            entity.Property(e => e.CliDepaCasa)
+                .HasDefaultValue(0)
+                .HasColumnName("CLI_DEPA_CASA");
+            entity.Property(e => e.CliDetTot)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_DET_TOT");
+            entity.Property(e => e.CliDiaVisita).HasColumnName("CLI_DIA_VISITA");
+            entity.Property(e => e.CliDiasCred).HasColumnName("CLI_DIAS_CRED");
+            entity.Property(e => e.CliDiasFac).HasColumnName("CLI_DIAS_FAC");
+            entity.Property(e => e.CliDireccionrep)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CLI_DIRECCIONREP");
+            entity.Property(e => e.CliDivision).HasColumnName("CLI_DIVISION");
+            entity.Property(e => e.CliEstado)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_ESTADO");
+            entity.Property(e => e.CliFc)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("CLI_FC");
+            entity.Property(e => e.CliFechaFac)
+                .HasColumnType("datetime")
+                .HasColumnName("CLI_FECHA_FAC");
+            entity.Property(e => e.CliFechahora)
+                .HasMaxLength(35)
+                .IsUnicode(false)
+                .HasDefaultValue(" ")
+                .IsFixedLength()
+                .HasColumnName("CLI_FECHAHORA");
+            entity.Property(e => e.CliGrupo).HasColumnName("CLI_GRUPO");
+            entity.Property(e => e.CliIdTipo).HasColumnName("CLI_ID_TIPO");
+            entity.Property(e => e.CliIgvIncluido)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_IGV_INCLUIDO");
+            entity.Property(e => e.CliLetra)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_LETRA");
+            entity.Property(e => e.CliLimcre)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("CLI_LIMCRE");
+            entity.Property(e => e.CliLimcre2)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("CLI_LIMCRE2");
+            entity.Property(e => e.CliLugarCasa).HasColumnName("CLI_LUGAR_CASA");
+            entity.Property(e => e.CliLugarTrab).HasColumnName("CLI_LUGAR_TRAB");
+            entity.Property(e => e.CliMarcado)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValue("0")
+                .IsFixedLength()
+                .HasColumnName("CLI_MARCADO");
+            entity.Property(e => e.CliMoneda)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_MONEDA");
+            entity.Property(e => e.CliNomLet1)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_NOM_LET1");
+            entity.Property(e => e.CliNomLet2)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_NOM_LET2");
+            entity.Property(e => e.CliNombre)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_NOMBRE");
+            entity.Property(e => e.CliNombreEmpresa)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_NOMBRE_EMPRESA");
+            entity.Property(e => e.CliNombreEsposa)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_NOMBRE_ESPOSA");
+            entity.Property(e => e.CliNombreEsposo)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_NOMBRE_ESPOSO");
+            entity.Property(e => e.CliNombres)
+                .HasMaxLength(80)
+                .IsUnicode(false)
+                .HasColumnName("CLI_NOMBRES");
+            entity.Property(e => e.CliNucleo)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_NUCLEO");
+            entity.Property(e => e.CliOtroContr)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValue(" ")
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_OTRO_CONTR");
+            entity.Property(e => e.CliPercep)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("CLI_PERCEP");
+            entity.Property(e => e.CliPorPercep)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(8, 2)")
+                .HasColumnName("CLI_POR_PERCEP");
+            entity.Property(e => e.CliPordescto)
+                .HasColumnType("numeric(8, 2)")
+                .HasColumnName("CLI_PORDESCTO");
+            entity.Property(e => e.CliPrecios).HasColumnName("CLI_PRECIOS");
+            entity.Property(e => e.CliPrenda)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_PRENDA");
+            entity.Property(e => e.CliProgramado)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_PROGRAMADO");
+            entity.Property(e => e.CliRegpub1)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_REGPUB1");
+            entity.Property(e => e.CliRegpub2)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_REGPUB2");
+            entity.Property(e => e.CliRucEmpresa)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_RUC_EMPRESA");
+            entity.Property(e => e.CliRucEsposa)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_RUC_ESPOSA");
+            entity.Property(e => e.CliRucEsposo)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_RUC_ESPOSO");
+            entity.Property(e => e.CliSaldo)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("CLI_SALDO");
+            entity.Property(e => e.CliSubgrupo)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_SUBGRUPO");
+            entity.Property(e => e.CliTelef1)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_TELEF1");
+            entity.Property(e => e.CliTelef2)
+                .HasMaxLength(12)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_TELEF2");
+            entity.Property(e => e.CliTipo)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_TIPO");
+            entity.Property(e => e.CliTipoBloq1)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_TIPO_BLOQ1");
+            entity.Property(e => e.CliTipoBloq2)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_TIPO_BLOQ2");
+            entity.Property(e => e.CliTipoBloq3)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_TIPO_BLOQ3");
+            entity.Property(e => e.CliTipoBloq4)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_TIPO_BLOQ4");
+            entity.Property(e => e.CliTipoClieVta)
+                .HasDefaultValue(0)
+                .HasColumnName("CLI_TIPO_CLIE_VTA");
+            entity.Property(e => e.CliTrabDirec)
+                .HasMaxLength(80)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_TRAB_DIREC");
+            entity.Property(e => e.CliTrabNum)
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("CLI_TRAB_NUM");
+            entity.Property(e => e.CliTrabProv).HasColumnName("CLI_TRAB_PROV");
+            entity.Property(e => e.CliTrabSubzona).HasColumnName("CLI_TRAB_SUBZONA");
+            entity.Property(e => e.CliTrabZona).HasColumnName("CLI_TRAB_ZONA");
+            entity.Property(e => e.CliUbigeo)
+                .HasMaxLength(6)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CLI_UBIGEO");
+            entity.Property(e => e.CliVentas).HasColumnName("CLI_VENTAS");
+            entity.Property(e => e.CliZonaNew).HasColumnName("CLI_ZONA_NEW");
+            entity.Property(e => e.CopiaLitRp).HasColumnName("CopiaLitRP");
+            entity.Property(e => e.FechaInicio).HasColumnType("datetime");
+            entity.Property(e => e.FechaNacCli).HasColumnType("datetime");
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Infocorp)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.Observaciones)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Clienteped>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__CLIENTE_KEY");
+
+            entity.ToTable("CLIENTEPED");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Comercial)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Direccion)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.NroDoc)
+                .HasMaxLength(11)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Detpedido>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__DETALLE_KEY");
+
+            entity.ToTable("DETPEDIDO");
+
+            entity.Property(e => e.Dscto1).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.Dscto2).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.Igv).HasColumnType("decimal(12, 2)");
+            entity.Property(e => e.PrecDscto).HasColumnType("decimal(12, 4)");
+            entity.Property(e => e.Precio).HasColumnType("decimal(12, 4)");
+            entity.Property(e => e.Subtotal).HasColumnType("decimal(12, 2)");
+            entity.Property(e => e.Total).HasColumnType("decimal(12, 2)");
+            entity.Property(e => e.Valor).HasColumnType("decimal(12, 4)");
+
+            entity.HasOne(d => d.IdPedNavigation).WithMany(p => p.Detpedidos)
+                .HasForeignKey(d => d.IdPed)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__DETALLE_P__IdPed__4F7CD00D");
+        });
+
+        modelBuilder.Entity<Dircli>(entity =>
+        {
+            entity.HasKey(e => new { e.Codcia, e.Dircli1, e.Codcli, e.Cp }).IsClustered(false);
+
+            entity.ToTable("DIRCLI", tb => tb.HasTrigger("Check_Direccion"));
+
+            entity.Property(e => e.Codcia)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CODCIA");
+            entity.Property(e => e.Dircli1)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("DIRCLI");
+            entity.Property(e => e.Codcli)
+                .HasColumnType("numeric(8, 0)")
+                .HasColumnName("CODCLI");
+            entity.Property(e => e.Cp)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CP");
+            entity.Property(e => e.CliCasaSubzona).HasColumnName("CLI_CASA_SUBZONA");
+            entity.Property(e => e.CliLugarTrab).HasColumnName("CLI_LUGAR_TRAB");
+            entity.Property(e => e.CliTrabSubzona).HasColumnName("CLI_TRAB_SUBZONA");
+            entity.Property(e => e.CliTrabZona).HasColumnName("CLI_TRAB_ZONA");
+            entity.Property(e => e.Depa)
+                .HasDefaultValue(0)
+                .HasColumnName("depa");
+            entity.Property(e => e.Dircomp)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasDefaultValue(" ")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("DIRCOMP");
+            entity.Property(e => e.Direc)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("DIREC");
+            entity.Property(e => e.Numero).HasColumnName("NUMERO");
+            entity.Property(e => e.Ref)
+                .HasMaxLength(80)
+                .IsUnicode(false)
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("REF");
+            entity.Property(e => e.Ubigeo)
+                .HasMaxLength(6)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("UBIGEO");
+        });
+
+        modelBuilder.Entity<Pedidoapp>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__PEDIDOS__3214EC07B9AF4618");
+
+            entity.ToTable("PEDIDOAPP");
+
+            entity.Property(e => e.Codigo)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.CondPago)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.Estado)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.FechaEdit).HasColumnType("datetime");
+            entity.Property(e => e.FechaProc).HasColumnType("datetime");
+            entity.Property(e => e.FechaReg).HasColumnType("datetime");
+            entity.Property(e => e.Igv).HasColumnType("decimal(12, 2)");
+            entity.Property(e => e.Latitud).HasColumnType("decimal(9, 6)");
+            entity.Property(e => e.Longitud).HasColumnType("decimal(9, 6)");
+            entity.Property(e => e.Observ)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.Subtotal).HasColumnType("decimal(12, 2)");
+            entity.Property(e => e.TipoDoc)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.Total).HasColumnType("decimal(12, 2)");
+            entity.Property(e => e.UsuarioProc)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Precio>(entity =>
+        {
+            entity.HasKey(e => new { e.PreCodcia, e.PreCodart, e.PreSecuencia }).HasName("PK___4__10");
+
+            entity.ToTable("PRECIOS");
+
+            entity.HasIndex(e => new { e.PreCodcia, e.PreCodart }, "PRECIOS34");
+
+            entity.HasIndex(e => new { e.PreCodcia, e.PreCodart, e.PrePre1, e.PrePre2, e.PrePre3, e.PrePre4, e.PrePre5, e.PreUnidad, e.PreEquiv, e.PreFlagUnidad, e.PrePre6 }, "PRECIOS7");
+
+            entity.Property(e => e.PreCodcia)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("PRE_CODCIA");
+            entity.Property(e => e.PreCodart)
+                .HasColumnType("numeric(8, 0)")
+                .HasColumnName("PRE_CODART");
+            entity.Property(e => e.PreSecuencia).HasColumnName("PRE_SECUENCIA");
+            entity.Property(e => e.PreCosto)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_COSTO");
+            entity.Property(e => e.PreCostoAnt)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_COSTO_ANT");
+            entity.Property(e => e.PreCostoRepo)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 3)")
+                .HasColumnName("PRE_COSTO_REPO");
+            entity.Property(e => e.PreEquiv)
+                .HasDefaultValue(1m)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("PRE_EQUIV");
+            entity.Property(e => e.PreFlagUnidad)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValue("A")
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("PRE_FLAG_UNIDAD");
+            entity.Property(e => e.PreLitro)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 3)")
+                .HasColumnName("PRE_LITRO");
+            entity.Property(e => e.PrePeso)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 3)")
+                .HasColumnName("PRE_PESO");
+            entity.Property(e => e.PrePor1)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 3)")
+                .HasColumnName("PRE_POR1");
+            entity.Property(e => e.PrePor2)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 3)")
+                .HasColumnName("PRE_POR2");
+            entity.Property(e => e.PrePor3)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 3)")
+                .HasColumnName("PRE_POR3");
+            entity.Property(e => e.PrePor4)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 3)")
+                .HasColumnName("PRE_POR4");
+            entity.Property(e => e.PrePor5)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 3)")
+                .HasColumnName("PRE_POR5");
+            entity.Property(e => e.PrePor6)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("PRE_POR6");
+            entity.Property(e => e.PrePor7)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("PRE_POR7");
+            entity.Property(e => e.PrePor8)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("PRE_POR8");
+            entity.Property(e => e.PrePor9)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_POR9");
+            entity.Property(e => e.PrePre1)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE1");
+            entity.Property(e => e.PrePre11)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE11");
+            entity.Property(e => e.PrePre2)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE2");
+            entity.Property(e => e.PrePre22)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE22");
+            entity.Property(e => e.PrePre3)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE3");
+            entity.Property(e => e.PrePre33)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE33");
+            entity.Property(e => e.PrePre4)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE4");
+            entity.Property(e => e.PrePre44)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE44");
+            entity.Property(e => e.PrePre5)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE5");
+            entity.Property(e => e.PrePre55)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE55");
+            entity.Property(e => e.PrePre6)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE6");
+            entity.Property(e => e.PrePre66)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE66");
+            entity.Property(e => e.PrePre7)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE7");
+            entity.Property(e => e.PrePre77)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE77");
+            entity.Property(e => e.PrePre8)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE8");
+            entity.Property(e => e.PrePre88)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE88");
+            entity.Property(e => e.PrePre9)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE9");
+            entity.Property(e => e.PrePre99)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRE99");
+            entity.Property(e => e.PrePrec1)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PREC1");
+            entity.Property(e => e.PrePrec11)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PREC11");
+            entity.Property(e => e.PrePrec2)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PREC2");
+            entity.Property(e => e.PrePrec22)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PREC22");
+            entity.Property(e => e.PrePrechi1)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRECHI1");
+            entity.Property(e => e.PrePrechi11)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("PRE_PRECHI11");
+            entity.Property(e => e.PreUnidad)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasDefaultValue("UNIDAD")
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("PRE_UNIDAD");
+        });
+
+        modelBuilder.Entity<Ubigeo>(entity =>
+        {
+            entity.HasKey(e => new { e.UCodcia, e.UUbigeo });
+
+            entity.ToTable("UBIGEO");
+
+            entity.Property(e => e.UCodcia)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("U_CODCIA");
+            entity.Property(e => e.UUbigeo)
+                .HasMaxLength(6)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("U_UBIGEO");
+            entity.Property(e => e.UIddep)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("U_IDDEP");
+            entity.Property(e => e.UIddist)
+                .HasMaxLength(6)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("U_IDDIST");
+            entity.Property(e => e.UIdprov)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("U_IDPROV");
+            entity.Property(e => e.UNomdep)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("U_NOMDEP");
+            entity.Property(e => e.UNomdist)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("U_NOMDIST");
+            entity.Property(e => e.UNomprov)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("U_NOMPROV");
+        });
+
+        modelBuilder.Entity<Vemaest>(entity =>
+        {
+            entity.HasKey(e => new { e.VemCodven, e.VemCodcia }).HasName("PK_VEMAEST_1__12");
+
+            entity.ToTable("VEMAEST");
+
+            entity.Property(e => e.VemCodven).HasColumnName("VEM_CODVEN");
+            entity.Property(e => e.VemCodcia)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("VEM_CODCIA");
+            entity.Property(e => e.Clave)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.VemAmLista)
+                .HasDefaultValue(0)
+                .HasColumnName("VEM_AM_LISTA");
+            entity.Property(e => e.VemCodclieC)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_CODCLIE_C");
+            entity.Property(e => e.VemCodclieP)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_CODCLIE_P");
+            entity.Property(e => e.VemDesactivo)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValue(" ")
+                .IsFixedLength()
+                .HasColumnName("VEM_DESACTIVO");
+            entity.Property(e => e.VemDireccion)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("VEM_DIRECCION");
+            entity.Property(e => e.VemFechaAuto)
+                .HasColumnType("datetime")
+                .HasColumnName("VEM_FECHA_AUTO");
+            entity.Property(e => e.VemFechaIng)
+                .HasColumnType("datetime")
+                .HasColumnName("VEM_FECHA_ING");
+            entity.Property(e => e.VemFlagB)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("VEM_FLAG_B");
+            entity.Property(e => e.VemFlagD)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("VEM_FLAG_D");
+            entity.Property(e => e.VemFlagF)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("VEM_FLAG_F");
+            entity.Property(e => e.VemFlagG)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("VEM_FLAG_G");
+            entity.Property(e => e.VemFlagN)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("VEM_FLAG_N");
+            entity.Property(e => e.VemFlagP)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("VEM_FLAG_P");
+            entity.Property(e => e.VemFlagPerc)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("VEM_FLAG_PERC");
+            entity.Property(e => e.VemFlagR)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("VEM_FLAG_R");
+            entity.Property(e => e.VemNombre)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("VEM_NOMBRE");
+            entity.Property(e => e.VemNroAuto)
+                .HasMaxLength(80)
+                .IsUnicode(false)
+                .HasDefaultValue("")
+                .HasColumnName("VEM_NRO_AUTO");
+            entity.Property(e => e.VemNumPercFin)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_NUM_PERC_FIN");
+            entity.Property(e => e.VemNumPercIni)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_NUM_PERC_INI");
+            entity.Property(e => e.VemNumfacBFin)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_NUMFAC_B_FIN");
+            entity.Property(e => e.VemNumfacBIni)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_NUMFAC_B_INI");
+            entity.Property(e => e.VemNumfacDFin)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_NUMFAC_D_FIN");
+            entity.Property(e => e.VemNumfacDIni)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_NUMFAC_D_INI");
+            entity.Property(e => e.VemNumfacFFin)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_NUMFAC_F_FIN");
+            entity.Property(e => e.VemNumfacFIni)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_NUMFAC_F_INI");
+            entity.Property(e => e.VemNumfacGFin)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_NUMFAC_G_FIN");
+            entity.Property(e => e.VemNumfacGIni)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_NUMFAC_G_INI");
+            entity.Property(e => e.VemNumfacNFin)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_NUMFAC_N_FIN");
+            entity.Property(e => e.VemNumfacNIni)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_NUMFAC_N_INI");
+            entity.Property(e => e.VemNumfacPFin)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_NUMFAC_P_FIN");
+            entity.Property(e => e.VemNumfacPIni)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("VEM_NUMFAC_P_INI");
+            entity.Property(e => e.VemPor)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("VEM_POR");
+            entity.Property(e => e.VemSerieB).HasColumnName("VEM_SERIE_B");
+            entity.Property(e => e.VemSerieD).HasColumnName("VEM_SERIE_D");
+            entity.Property(e => e.VemSerieF).HasColumnName("VEM_SERIE_F");
+            entity.Property(e => e.VemSerieG).HasColumnName("VEM_SERIE_G");
+            entity.Property(e => e.VemSerieN).HasColumnName("VEM_SERIE_N");
+            entity.Property(e => e.VemSerieP).HasColumnName("VEM_SERIE_P");
+            entity.Property(e => e.VemSeriePerc).HasColumnName("VEM_SERIE_PERC");
+            entity.Property(e => e.VemSerieR).HasColumnName("VEM_SERIE_R");
+            entity.Property(e => e.VemTeleCasa)
+                .HasMaxLength(12)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("VEM_TELE_CASA");
+            entity.Property(e => e.VemTeleCelu)
+                .HasMaxLength(12)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("VEM_TELE_CELU");
+            entity.Property(e => e.VemTipovend).HasColumnName("VEM_TIPOVEND");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -32,4 +32,6 @@ public partial class Articulo
     public decimal? ArmSaldoN { get; set; }
 
     public decimal? ArmSaldoN2 { get; set; }
+
+    public int? Comprometido { get; set; }
 }

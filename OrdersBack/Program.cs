@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OrdersBack.Models;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // builder.Services.AddDbContext<BdatosContext>(opt => opt.UseSqlServer("Server=localhost;Database=BDATOS;Trusted_Connection=true;TrustServerCertificate=True;"));
 builder.Services.AddDbContext<BdatosContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("bDatos")));
 

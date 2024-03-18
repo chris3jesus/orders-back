@@ -31,5 +31,5 @@ public partial class Detpedido
 
     public decimal Total { get; set; }
 
-    public virtual Pedidoapp IdPedNavigation { get; set; } = null!;
+    public virtual Pedidoapp? IdPedNavigation { get; set; }
 }

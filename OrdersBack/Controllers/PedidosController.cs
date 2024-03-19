@@ -22,7 +22,7 @@ namespace OrdersBack.Controllers
             return await _context.Pedidoapps.Include(p => p.Detpedidos).ToListAsync();
         }
 
-        // GET: api/Pedido/5
+        // GET: api/Pedidos/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Pedidoapp>> GetPedido(int id)
         {
@@ -64,28 +64,78 @@ namespace OrdersBack.Controllers
             return NoContent();
         }
 
+        // POST: api/Pedidos
         [HttpPost]
         public async Task<ActionResult<Pedidoapp>> PostPedido(Pedidoapp pedido)
         {
-            pedido.FechaReg = DateTime.Now;
-
-            _context.Pedidoapps.Add(pedido);
-            await _context.SaveChangesAsync();
-
-            List<Detpedido> nuevosDetalles = new List<Detpedido>();
-
-            if (pedido.Detpedidos != null && pedido.Detpedidos.Any())
+            try
             {
-                foreach (var detalle in pedido.Detpedidos)
-                {
-                    nuevosDetalles.Add(detalle);
-                }
-                pedido.Detpedidos.Clear();
-            }
+                pedido.Codigo = GeneratePedidoCode(pedido);
+                pedido.CondPago = "Contado";
+                pedido.DiasCred = 1;
+                pedido.FechaReg = DateTime.Now;
+                pedido.Estado = "Pendiente";
 
-            pedido.Detpedidos = nuevosDetalles;
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetPedido), new { id = pedido.Id }, pedido);
+                _context.Pedidoapps.Add(pedido);
+                await _context.SaveChangesAsync();
+
+                if (pedido.Detpedidos != null && pedido.Detpedidos.Any())
+                {
+                    List<Detpedido> nuevosDetalles = new List<Detpedido>();
+
+                    int itemCounter = 1;
+                    decimal subtotalPedido = 0;
+                    decimal igvPedido = 0;
+                    decimal totalPedido = 0;
+
+                    foreach (var detalle in pedido.Detpedidos)
+                    {
+                        var precio = await _context.Precios.FirstOrDefaultAsync(a => a.PreCodart == detalle.IdProd && a.PreFlagUnidad == "A" && a.PreCodcia == "01");
+
+                        if (precio != null)
+                        {
+                            detalle.Item = itemCounter++;
+
+                            decimal valor = (decimal)precio.PrePre1;
+                            detalle.Valor = valor;
+                            detalle.Precio = Math.Round(valor * 1.18m, 4);
+
+                            detalle.Dscto1 = 5;
+                            detalle.Dscto2 = 0;
+                            detalle.PrecDscto = Math.Round(detalle.Precio * (1 - detalle.Dscto1 / 100m), 4);
+
+                            detalle.Subtotal = Math.Round(detalle.PrecDscto * detalle.Cantidad, 2);
+                            detalle.Igv = Math.Round(detalle.Subtotal * 0.18m, 2);
+                            detalle.Total = Math.Round(detalle.Subtotal + detalle.Igv, 2);
+
+                            subtotalPedido += detalle.Subtotal;
+                            igvPedido += detalle.Igv;
+                            totalPedido += detalle.Total;
+
+                            nuevosDetalles.Add(detalle);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"No se encontró un precio para el producto con ID {detalle.IdProd}.");
+                        }
+                    }
+
+                    pedido.Subtotal = Math.Round(subtotalPedido, 2);
+                    pedido.Igv = Math.Round(igvPedido, 2);
+                    pedido.Total = Math.Round(totalPedido, 2);
+
+                    pedido.Detpedidos.Clear();
+                    pedido.Detpedidos = nuevosDetalles;
+                }
+
+                await _context.SaveChangesAsync();
+                return CreatedAtAction(nameof(GetPedido), new { id = pedido.Id }, pedido);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al crear el pedido: {ex.ToString()}");
+                return StatusCode(500, $"Error al crear el pedido: {ex.Message}");
+            }
         }
 
         private bool PedidoExists(int id)
@@ -93,6 +143,15 @@ namespace OrdersBack.Controllers
             return _context.Pedidoapps.Any(e => e.Id == id);
         }
 
-        // TODO: check data
+        private string GeneratePedidoCode(Pedidoapp pedido)
+        {
+            int codVen = pedido.CodVen;
+            string fechaActual = DateTime.Now.ToString("ddMMyyyy");
+
+            int count = _context.Pedidoapps.Count(p => p.CodVen == codVen && p.FechaReg.Date == DateTime.Today);
+
+            string pedidoCode = $"{codVen}-{fechaActual}-{count + 1}";
+            return pedidoCode;
+        }
     }
 }

@@ -7,13 +7,13 @@ public partial class Pedidoapp
 {
     public int Id { get; set; }
 
-    public string Codigo { get; set; } = null!;
+    public string? Codigo { get; set; }
 
     public int CodCli { get; set; }
 
     public int CodVen { get; set; }
 
-    public string CondPago { get; set; } = null!;
+    public string? CondPago { get; set; }
 
     public int DiasCred { get; set; }
 
@@ -23,7 +23,7 @@ public partial class Pedidoapp
 
     public DateTime? FechaProc { get; set; }
 
-    public string Estado { get; set; } = null!;
+    public string? Estado { get; set; }
 
     public decimal Subtotal { get; set; }
 

@@ -42,7 +42,7 @@ namespace OrdersBack.Controllers
             foreach (var producto in productos)
             {
                 var articulo = await _context.Articulos.FirstOrDefaultAsync(a => a.ArmCodart == producto.ArtKey && a.ArmCodcia == "01");
-                var precio = await _context.Precios.FirstOrDefaultAsync(a => a.PreCodart == producto.ArtKey && a.PreCodcia == "01");
+                var precio = await _context.Precios.FirstOrDefaultAsync(a => a.PreCodart == producto.ArtKey && a.PreFlagUnidad == "A" && a.PreCodcia == "01");
                 var marca = await _context.Tablas.FirstOrDefaultAsync(a => a.TabNumtab == producto.ArtFamilia && a.TabTipreg == 122 && a.TabCodcia == "01");
 
                 if (articulo != null)

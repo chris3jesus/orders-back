@@ -44,10 +44,84 @@ namespace OrdersBack.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(pedido).State = EntityState.Modified;
-
             try
             {
+                var pedidoExistente = await _context.Pedidoapps.Include(p => p.Detpedidos).FirstOrDefaultAsync(p => p.Id == id);
+
+                if (pedidoExistente == null)
+                {
+                    return NotFound("No se encontraron pedidos.");
+                }
+
+                pedidoExistente.TipoDoc = pedido.TipoDoc;
+                pedidoExistente.Estado = "Modificado";
+                pedidoExistente.IdDirCli = pedido.IdDirCli;
+                pedidoExistente.Latitud = pedido.Latitud;
+                pedidoExistente.Longitud = pedido.Longitud;
+                pedidoExistente.Flete = pedido.Flete;
+                pedidoExistente.Observ = pedido.Observ;
+                pedidoExistente.FechaEdit = DateTime.Now;
+
+                decimal subtotalPedido = 0;
+                decimal igvPedido = 0;
+                decimal totalPedido = 0;
+
+                foreach (var detalle in pedido.Detpedidos)
+                {
+                    var detalleExistente = pedidoExistente.Detpedidos.FirstOrDefault(d => d.Id == detalle.Id);
+
+                    if (detalleExistente != null)
+                    {
+                        detalleExistente.Cantidad = detalle.Cantidad;
+                        var precio = await _context.Precios.FirstOrDefaultAsync(a => a.PreCodart == detalle.IdProd && a.PreFlagUnidad == "A" && a.PreCodcia == "01");
+
+                        if (precio != null)
+                        {
+                            detalleExistente.Valor = (decimal)precio.PrePre1;
+                            detalleExistente.Precio = Math.Round(detalleExistente.Valor * 1.18m, 4);
+                            detalleExistente.PrecDscto = Math.Round(detalleExistente.Precio * (1 - detalleExistente.Dscto1 / 100m), 4);
+                            detalleExistente.Subtotal = Math.Round(detalleExistente.PrecDscto * detalleExistente.Cantidad, 2);
+                            detalleExistente.Igv = Math.Round(detalleExistente.Subtotal * 0.18m, 2);
+                            detalleExistente.Total = Math.Round(detalleExistente.Subtotal + detalleExistente.Igv, 2);
+
+                            subtotalPedido += detalleExistente.Subtotal;
+                            igvPedido += detalleExistente.Igv;
+                            totalPedido += detalleExistente.Total;
+                        }
+                    }
+                    else
+                    {
+                        var nuevoDetalle = new Detpedido
+                        {
+                            Item = pedidoExistente.Detpedidos.Count + 1,
+                            IdProd = detalle.IdProd,
+                            Cantidad = detalle.Cantidad,
+                            Dscto1 = 5
+                        };
+
+                        var precio = await _context.Precios.FirstOrDefaultAsync(a => a.PreCodart == detalle.IdProd && a.PreFlagUnidad == "A" && a.PreCodcia == "01");
+
+                        if (precio != null)
+                        {
+                            nuevoDetalle.Valor = (decimal)precio.PrePre1;
+                            nuevoDetalle.Precio = Math.Round(nuevoDetalle.Valor * 1.18m, 4);
+                            nuevoDetalle.PrecDscto = Math.Round(nuevoDetalle.Precio * (1 - nuevoDetalle.Dscto1 / 100m), 4);
+                            nuevoDetalle.Subtotal = Math.Round(nuevoDetalle.PrecDscto * nuevoDetalle.Cantidad, 2);
+                            nuevoDetalle.Igv = Math.Round(nuevoDetalle.Subtotal * 0.18m, 2);
+                            nuevoDetalle.Total = Math.Round(nuevoDetalle.Subtotal + nuevoDetalle.Igv, 2);
+                        }
+
+                        pedidoExistente.Detpedidos.Add(nuevoDetalle);
+
+                        subtotalPedido += nuevoDetalle.Subtotal;
+                        igvPedido += nuevoDetalle.Igv;
+                        totalPedido += nuevoDetalle.Total;
+                    }
+                }
+
+                pedidoExistente.Subtotal = Math.Round(subtotalPedido, 2);
+                pedidoExistente.Igv = Math.Round(igvPedido, 2);
+                pedidoExistente.Total = Math.Round(totalPedido, 2);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

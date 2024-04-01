@@ -35,6 +35,20 @@ namespace OrdersBack.Controllers
             return pedido;
         }
 
+        // GET: api/Pedidos/v/5
+        [HttpGet("v/{vendedor}")]
+        public async Task<ActionResult<IEnumerable<Pedidoapp>>> GetPedidoVen(int vendedor)
+        {
+            DateTime fechaActual = DateTime.Today;
+            var pedido = await _context.Pedidoapps.Include(p => p.Detpedidos).Where(p => p.FechaReg.Date == fechaActual && p.CodVen == vendedor).ToListAsync();
+
+            if (pedido == null)
+            {
+                return NotFound("No se encontraron pedidos.");
+            }
+            return pedido;
+        }
+
         // PUT: api/Pedidos/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPedido(int id, Pedidoapp pedido)

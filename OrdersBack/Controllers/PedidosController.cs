@@ -76,66 +76,55 @@ namespace OrdersBack.Controllers
                 pedidoExistente.Observ = pedido.Observ;
                 pedidoExistente.FechaEdit = DateTime.Now;
 
-                decimal subtotalPedido = 0;
-                decimal igvPedido = 0;
-                decimal totalPedido = 0;
+                _context.Detpedidos.RemoveRange(pedidoExistente.Detpedidos);
+                pedidoExistente.Detpedidos.Clear();
 
-                foreach (var detalle in pedido.Detpedidos)
+                if (pedido.Detpedidos != null && pedido.Detpedidos.Any())
                 {
-                    var detalleExistente = pedidoExistente.Detpedidos.FirstOrDefault(d => d.Id == detalle.Id);
+                    int itemCounter = 1;
+                    decimal subtotalPedido = 0;
+                    decimal igvPedido = 0;
+                    decimal totalPedido = 0;
 
-                    if (detalleExistente != null)
+                    foreach (var detalle in pedido.Detpedidos)
                     {
-                        detalleExistente.Cantidad = detalle.Cantidad;
                         var precio = await _context.Precios.FirstOrDefaultAsync(a => a.PreCodart == detalle.IdProd && a.PreFlagUnidad == "A" && a.PreCodcia == "01");
 
                         if (precio != null)
                         {
-                            detalleExistente.Valor = (decimal)precio.PrePre1;
-                            detalleExistente.Precio = Math.Round(detalleExistente.Valor * 1.18m, 4);
-                            detalleExistente.PrecDscto = Math.Round(detalleExistente.Precio * (1 - detalleExistente.Dscto1 / 100m), 4);
-                            detalleExistente.Subtotal = Math.Round(detalleExistente.PrecDscto * detalleExistente.Cantidad, 2);
-                            detalleExistente.Igv = Math.Round(detalleExistente.Subtotal * 0.18m, 2);
-                            detalleExistente.Total = Math.Round(detalleExistente.Subtotal + detalleExistente.Igv, 2);
+                            decimal valor = (decimal)precio.PrePre1;
 
-                            subtotalPedido += detalleExistente.Subtotal;
-                            igvPedido += detalleExistente.Igv;
-                            totalPedido += detalleExistente.Total;
+                            var nuevoDetalle = new Detpedido
+                            {
+                                IdProd = detalle.IdProd,
+                                Cantidad = detalle.Cantidad,
+                                Item = itemCounter++,
+                                Valor = valor,
+                                Precio = Math.Round(valor * 1.18m, 4),
+
+                                Dscto1 = detalle.Dscto1,
+                                Dscto2 = detalle.Dscto2,
+
+                                PrecDscto = Math.Round(valor * 1.18m * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m), 4),
+                                Subtotal = Math.Round(valor * detalle.Cantidad * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m), 2),
+                                Igv = Math.Round(valor * detalle.Cantidad * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m) * 0.18m, 2),
+                                Total = Math.Round(valor * detalle.Cantidad * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m) * 1.18m, 2)
+                            };
+
+                            subtotalPedido += nuevoDetalle.Subtotal;
+                            igvPedido += nuevoDetalle.Igv;
+                            totalPedido += nuevoDetalle.Total;
+                            pedidoExistente.Detpedidos.Add(nuevoDetalle);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"No se encontró un precio para el producto con ID {detalle.IdProd}.");
                         }
                     }
-                    else
-                    {
-                        var nuevoDetalle = new Detpedido
-                        {
-                            Item = pedidoExistente.Detpedidos.Count + 1,
-                            IdProd = detalle.IdProd,
-                            Cantidad = detalle.Cantidad,
-                            Dscto1 = 5
-                        };
-
-                        var precio = await _context.Precios.FirstOrDefaultAsync(a => a.PreCodart == detalle.IdProd && a.PreFlagUnidad == "A" && a.PreCodcia == "01");
-
-                        if (precio != null)
-                        {
-                            nuevoDetalle.Valor = (decimal)precio.PrePre1;
-                            nuevoDetalle.Precio = Math.Round(nuevoDetalle.Valor * 1.18m, 4);
-                            nuevoDetalle.PrecDscto = Math.Round(nuevoDetalle.Precio * (1 - nuevoDetalle.Dscto1 / 100m), 4);
-                            nuevoDetalle.Subtotal = Math.Round(nuevoDetalle.PrecDscto * nuevoDetalle.Cantidad, 2);
-                            nuevoDetalle.Igv = Math.Round(nuevoDetalle.Subtotal * 0.18m, 2);
-                            nuevoDetalle.Total = Math.Round(nuevoDetalle.Subtotal + nuevoDetalle.Igv, 2);
-                        }
-
-                        pedidoExistente.Detpedidos.Add(nuevoDetalle);
-
-                        subtotalPedido += nuevoDetalle.Subtotal;
-                        igvPedido += nuevoDetalle.Igv;
-                        totalPedido += nuevoDetalle.Total;
-                    }
+                    pedidoExistente.Subtotal = Math.Round(subtotalPedido, 2);
+                    pedidoExistente.Igv = Math.Round(igvPedido, 2);
+                    pedidoExistente.Total = Math.Round(totalPedido, 2);
                 }
-
-                pedidoExistente.Subtotal = Math.Round(subtotalPedido, 2);
-                pedidoExistente.Igv = Math.Round(igvPedido, 2);
-                pedidoExistente.Total = Math.Round(totalPedido, 2);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -188,13 +177,18 @@ namespace OrdersBack.Controllers
                             detalle.Valor = valor;
                             detalle.Precio = Math.Round(valor * 1.18m, 4);
 
-                            detalle.Dscto1 = 5;
-                            detalle.Dscto2 = 0;
-                            detalle.PrecDscto = Math.Round(detalle.Precio * (1 - detalle.Dscto1 / 100m), 4);
+                            // detalle.Dscto1 = 5;
+                            // detalle.Dscto2 = 0;
+                            detalle.PrecDscto = Math.Round(detalle.Precio * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m), 4);
 
-                            detalle.Subtotal = Math.Round(detalle.PrecDscto * detalle.Cantidad, 2);
-                            detalle.Igv = Math.Round(detalle.Subtotal * 0.18m, 2);
-                            detalle.Total = Math.Round(detalle.Subtotal + detalle.Igv, 2);
+                            // detalle.Subtotal = Math.Round(detalle.PrecDscto * detalle.Cantidad, 2);
+                            detalle.Subtotal = Math.Round(detalle.Valor * detalle.Cantidad * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m), 2);
+
+                            // detalle.Igv = Math.Round(detalle.Subtotal * 0.18m, 2);
+                            detalle.Igv = Math.Round(detalle.Valor * detalle.Cantidad * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m) * 0.18m, 2);
+
+                            // detalle.Total = Math.Round(detalle.Subtotal + detalle.Igv, 2);
+                            detalle.Total = Math.Round(detalle.PrecDscto * detalle.Cantidad, 2);
 
                             subtotalPedido += detalle.Subtotal;
                             igvPedido += detalle.Igv;

@@ -24,7 +24,8 @@ namespace OrdersBack.Controllers
 
             if (int.TryParse(key, out int codigo))
             {
-                productoQuery = productoQuery.Where(a => a.ArtKey == codigo);
+                // productoQuery = productoQuery.Where(a => a.ArtKey == codigo);
+                productoQuery = productoQuery.Where(a => a.ArtAlterno.Contains(key));
             }
             else
             {
@@ -53,7 +54,7 @@ namespace OrdersBack.Controllers
                     }
                     productosDtos.Add(new ProductoDTO
                     {
-                        Codigo = (int)producto.ArtKey,
+                        Codigo = Int32.Parse(producto.ArtAlterno.Trim()),
                         Descripcion = producto.ArtNombre.Trim(),
                         Marca = marca.TabNomlargo.Trim(),
                         Presentacion = precio.PreUnidad.Trim(),

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OrdersBack.Models;
+using System.Linq;
 
 namespace OrdersBack.Controllers
 {
@@ -88,7 +89,8 @@ namespace OrdersBack.Controllers
 
                     foreach (var detalle in pedido.Detpedidos)
                     {
-                        var precio = await _context.Precios.FirstOrDefaultAsync(a => a.PreCodart == detalle.IdProd && a.PreFlagUnidad == "A" && a.PreCodcia == "01");
+                        var codart = _context.Artis.FirstOrDefault(x => x.ArtAlterno == detalle.IdProd.ToString() && x.ArtCodcia == "01" && x.ArtSituacion == "0");
+                        var precio = await _context.Precios.FirstOrDefaultAsync(a => a.PreCodart == codart.ArtKey && a.PreFlagUnidad == "A" && a.PreCodcia == "01");
 
                         if (precio != null)
                         {
@@ -167,7 +169,8 @@ namespace OrdersBack.Controllers
 
                     foreach (var detalle in pedido.Detpedidos)
                     {
-                        var precio = await _context.Precios.FirstOrDefaultAsync(a => a.PreCodart == detalle.IdProd && a.PreFlagUnidad == "A" && a.PreCodcia == "01");
+                        var codart = _context.Artis.FirstOrDefault(x => x.ArtAlterno == detalle.IdProd.ToString() && x.ArtCodcia == "01" && x.ArtSituacion == "0");
+                        var precio = await _context.Precios.FirstOrDefaultAsync(a => a.PreCodart == codart.ArtKey && a.PreFlagUnidad == "A" && a.PreCodcia == "01");
 
                         if (precio != null)
                         {

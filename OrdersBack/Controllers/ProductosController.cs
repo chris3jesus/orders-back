@@ -57,7 +57,8 @@ namespace OrdersBack.Controllers
                         Descripcion = producto.ArtNombre.Trim(),
                         Marca = marca.TabNomlargo.Trim(),
                         Presentacion = precio.PreUnidad.Trim(),
-                        Precio = (decimal)precio.PrePre1,
+                        Valor = (decimal)precio.PrePre1,
+                        Precio = Math.Round((decimal)precio.PrePre1 * 1.18m, 4),
                         Stock = (int)articulo.ArmStock - (int)articulo.Comprometido
                     });
                 }

@@ -89,7 +89,7 @@ namespace OrdersBack.Controllers
 
                     foreach (var detalle in pedido.Detpedidos)
                     {
-                        var codart = await _context.Artis.FirstOrDefaultAsync(x => x.ArtAlterno == detalle.IdProd.ToString() && x.ArtCodcia == "01" && x.ArtSituacion == "0");
+                        var codart = await _context.Artis.FirstOrDefaultAsync(x => x.ArtAlterno == detalle.IdProd && x.ArtCodcia == "01" && x.ArtSituacion == "0");
                         var precio = await _context.Precios.FirstOrDefaultAsync(a => a.PreCodart == codart.ArtKey && a.PreFlagUnidad == "A" && a.PreCodcia == "01");
 
                         if (precio != null)
@@ -169,7 +169,7 @@ namespace OrdersBack.Controllers
 
                     foreach (var detalle in pedido.Detpedidos)
                     {
-                        var codart = await _context.Artis.FirstOrDefaultAsync(x => x.ArtAlterno == detalle.IdProd.ToString() && x.ArtCodcia == "01" && x.ArtSituacion == "0");
+                        var codart = await _context.Artis.FirstOrDefaultAsync(x => x.ArtAlterno == detalle.IdProd && x.ArtCodcia == "01" && x.ArtSituacion == "0");
                         var precio = await _context.Precios.FirstOrDefaultAsync(a => a.PreCodart == codart.ArtKey && a.PreFlagUnidad == "A" && a.PreCodcia == "01");
 
                         if (precio != null)

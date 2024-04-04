@@ -11,7 +11,7 @@ public partial class Detpedido
 
     public int Item { get; set; }
 
-    public int IdProd { get; set; }
+    public string? IdProd { get; set; }
 
     public int Cantidad { get; set; }
 

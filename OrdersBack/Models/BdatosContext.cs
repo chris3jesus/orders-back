@@ -862,7 +862,7 @@ public partial class BdatosContext : DbContext
 
         modelBuilder.Entity<Clienteped>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__CLIENTE_KEY");
+            entity.HasKey(e => e.Id).HasName("PK__CLIENTEP__3214EC074E80EC38");
 
             entity.ToTable("CLIENTEPED");
 
@@ -883,12 +883,15 @@ public partial class BdatosContext : DbContext
 
         modelBuilder.Entity<Detpedido>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__DETALLE_KEY");
+            entity.HasKey(e => e.Id).HasName("PK__DETPEDID__3214EC07674C9A02");
 
             entity.ToTable("DETPEDIDO");
 
             entity.Property(e => e.Dscto1).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.Dscto2).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.IdProd)
+                .HasMaxLength(20)
+                .IsUnicode(false);
             entity.Property(e => e.Igv).HasColumnType("decimal(12, 2)");
             entity.Property(e => e.PrecDscto).HasColumnType("decimal(12, 4)");
             entity.Property(e => e.Precio).HasColumnType("decimal(12, 4)");
@@ -899,7 +902,7 @@ public partial class BdatosContext : DbContext
             entity.HasOne(d => d.IdPedNavigation).WithMany(p => p.Detpedidos)
                 .HasForeignKey(d => d.IdPed)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DETALLE_P__IdPed__4F7CD00D");
+                .HasConstraintName("FK__DETPEDIDO__IdPed__6934E274");
         });
 
         modelBuilder.Entity<Dircli>(entity =>
@@ -960,7 +963,7 @@ public partial class BdatosContext : DbContext
 
         modelBuilder.Entity<Pedidoapp>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PEDIDOS__3214EC07B9AF4618");
+            entity.HasKey(e => e.Id).HasName("PK__PEDIDOAP__3214EC07637C091E");
 
             entity.ToTable("PEDIDOAPP");
 

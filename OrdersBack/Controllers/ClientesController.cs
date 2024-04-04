@@ -131,11 +131,13 @@ namespace OrdersBack.Controllers
 
                     Direcciones = direcciones.Select(d =>
                     {
+                        var tablas = _context.Tablas.FirstOrDefault(t => t.TabNumtab == d.CliLugarTrab && t.TabTipreg == 25 && t.TabCodcia == "00");
+                        var direccion = tablas.TabNomlargo.Trim() + " " + d.Direc.Trim();
                         var ubigeos = _context.Ubigeos.Where(u => u.UUbigeo == d.Ubigeo).Select(u => new
                         {
-                            Distrito = u.UNomdist.Trim(),
-                            Provincia = u.UNomprov.Trim(),
-                            Departamento = u.UNomdep.Trim()
+                            Distrito = u.UNomdist.Trim().Substring(7),
+                            Provincia = u.UNomprov.Trim().Substring(5),
+                            Departamento = u.UNomdep.Trim().Substring(3)
                         }).ToList();
 
                         var distrito = ubigeos.Select(u => u.Distrito).FirstOrDefault() ?? "";
@@ -145,7 +147,7 @@ namespace OrdersBack.Controllers
                         return new DireccionDTO
                         {
                             Codigo = d.Dircli1,
-                            Direccion = d.Direc.Trim(),
+                            Direccion = direccion,
                             Distrito = distrito,
                             Provincia = provincia,
                             Departamento = departamento

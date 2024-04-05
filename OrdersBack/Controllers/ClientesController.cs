@@ -100,7 +100,7 @@ namespace OrdersBack.Controllers
 
             if (int.TryParse(key, out int codigo))
             {
-                clienteQuery = clienteQuery.Where(a => a.CliCodclie == codigo);
+                clienteQuery = clienteQuery.Where(a => a.CliCodclie == codigo || a.CliRucEsposo.Contains(key) || a.CliRucEsposa.Contains(key));
             }
             else
             {

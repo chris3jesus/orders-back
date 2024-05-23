@@ -68,8 +68,12 @@ namespace OrdersBack.Controllers
                     return NotFound("No se encontraron pedidos.");
                 }
 
+                foreach (var detalle in pedidoExistente.Detpedidos)
+                {
+                    await RevertirComprometidoStockAsync(detalle.IdProd, detalle.Cantidad);
+                }
+
                 pedidoExistente.TipoDoc = pedido.TipoDoc;
-                pedidoExistente.Estado = "Modificado";
                 pedidoExistente.IdDirCli = pedido.IdDirCli;
                 pedidoExistente.Latitud = pedido.Latitud;
                 pedidoExistente.Longitud = pedido.Longitud;
@@ -117,6 +121,8 @@ namespace OrdersBack.Controllers
                             igvPedido += nuevoDetalle.Igv;
                             totalPedido += nuevoDetalle.Total;
                             pedidoExistente.Detpedidos.Add(nuevoDetalle);
+
+                            await AddComprometidoStockAsync(detalle.IdProd, detalle.Cantidad);
                         }
                         else
                         {
@@ -180,17 +186,9 @@ namespace OrdersBack.Controllers
                             detalle.Valor = valor;
                             detalle.Precio = Math.Round(valor * 1.18m, 4);
 
-                            // detalle.Dscto1 = 5;
-                            // detalle.Dscto2 = 0;
                             detalle.PrecDscto = Math.Round(detalle.Precio * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m), 4);
-
-                            // detalle.Subtotal = Math.Round(detalle.PrecDscto * detalle.Cantidad, 2);
                             detalle.Subtotal = Math.Round(detalle.Valor * detalle.Cantidad * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m), 2);
-
-                            // detalle.Igv = Math.Round(detalle.Subtotal * 0.18m, 2);
                             detalle.Igv = Math.Round(detalle.Valor * detalle.Cantidad * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m) * 0.18m, 2);
-
-                            // detalle.Total = Math.Round(detalle.Subtotal + detalle.Igv, 2);
                             detalle.Total = Math.Round(detalle.PrecDscto * detalle.Cantidad, 2);
 
                             subtotalPedido += detalle.Subtotal;
@@ -198,6 +196,8 @@ namespace OrdersBack.Controllers
                             totalPedido += detalle.Total;
 
                             nuevosDetalles.Add(detalle);
+
+                            await AddComprometidoStockAsync(detalle.IdProd, detalle.Cantidad);
                         }
                         else
                         {
@@ -237,6 +237,56 @@ namespace OrdersBack.Controllers
 
             string pedidoCode = $"{codVen}-{fechaActual}-{count + 1}";
             return pedidoCode;
+        }
+
+        private async Task AddComprometidoStockAsync(string codigo, int cantidad)
+        {
+            var key = await _context.Artis.FirstOrDefaultAsync(a => a.ArtAlterno == codigo && a.ArtCodcia == "01" && a.ArtSituacion == "0");
+            if (key == null)
+            {
+                Console.WriteLine($"No se encontró un artículo con el código alterno {codigo}.");
+                return;
+            }
+
+            var articulo = await _context.Articulos.FirstOrDefaultAsync(a => a.ArmCodart == key.ArtKey && a.ArmCodcia == "01");
+            if (articulo == null)
+            {
+                Console.WriteLine($"No se encontró un artículo con el código {key.ArtKey}.");
+                return;
+            }
+
+            if (articulo.Comprometido == null)
+            {
+                articulo.Comprometido = 0;
+            }
+
+            articulo.Comprometido += cantidad;
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task RevertirComprometidoStockAsync(string codigo, int cantidad)
+        {
+            var key = await _context.Artis.FirstOrDefaultAsync(a => a.ArtAlterno == codigo && a.ArtCodcia == "01" && a.ArtSituacion == "0");
+            if (key == null)
+            {
+                Console.WriteLine($"No se encontró un artículo con el código alterno {codigo}.");
+                return;
+            }
+
+            var articulo = await _context.Articulos.FirstOrDefaultAsync(a => a.ArmCodart == key.ArtKey && a.ArmCodcia == "01");
+            if (articulo == null)
+            {
+                Console.WriteLine($"No se encontró un artículo con el código {key.ArtKey}.");
+                return;
+            }
+
+            if (articulo.Comprometido == null)
+            {
+                articulo.Comprometido = 0;
+            }
+
+            articulo.Comprometido -= cantidad;
+            await _context.SaveChangesAsync();
         }
     }
 }

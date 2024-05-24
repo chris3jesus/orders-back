@@ -23,9 +23,13 @@ public partial class BdatosContext : DbContext
 
     public virtual DbSet<Clienteped> Clientepeds { get; set; }
 
+    public virtual DbSet<Cuotavend> Cuotavends { get; set; }
+
     public virtual DbSet<Detpedido> Detpedidos { get; set; }
 
     public virtual DbSet<Dircli> Dirclis { get; set; }
+
+    public virtual DbSet<Facart> Facarts { get; set; }
 
     public virtual DbSet<Pedidoapp> Pedidoapps { get; set; }
 
@@ -881,6 +885,34 @@ public partial class BdatosContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<Cuotavend>(entity =>
+        {
+            entity.HasKey(e => new { e.CuoCodcia, e.CuoPeriodo, e.CuoCodven, e.CuoLinea, e.CuoCodclie });
+
+            entity.ToTable("CUOTAVEND");
+
+            entity.Property(e => e.CuoCodcia)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("CUO_CODCIA");
+            entity.Property(e => e.CuoPeriodo)
+                .HasMaxLength(6)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("CUO_PERIODO");
+            entity.Property(e => e.CuoCodven).HasColumnName("CUO_CODVEN");
+            entity.Property(e => e.CuoLinea).HasColumnName("CUO_LINEA");
+            entity.Property(e => e.CuoCodclie)
+                .HasColumnType("numeric(18, 0)")
+                .HasColumnName("CUO_CODCLIE");
+            entity.Property(e => e.CuoValor)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(13, 4)")
+                .HasColumnName("CUO_VALOR");
+        });
+
         modelBuilder.Entity<Detpedido>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__DETPEDID__3214EC07674C9A02");
@@ -959,6 +991,462 @@ public partial class BdatosContext : DbContext
                 .IsFixedLength()
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS")
                 .HasColumnName("UBIGEO");
+        });
+
+        modelBuilder.Entity<Facart>(entity =>
+        {
+            entity.HasKey(e => new { e.FarCodcia, e.FarFbg, e.FarNumfac, e.FarNumsec, e.FarNumser, e.FarTipmov }).HasName("PK_FACARTNEW_1__11");
+
+            entity.ToTable("FACART", tb =>
+                {
+                    tb.HasTrigger("Update_Cantidad_P");
+                    tb.HasTrigger("Update_Cantidad_Paquetes");
+                });
+
+            entity.HasIndex(e => new { e.FarCodcia, e.FarCodart, e.FarEstado, e.FarEstado2, e.FarOtraCia }, "CheEnvioRecep");
+
+            entity.HasIndex(e => new { e.FarCodcia, e.FarFechaCompra }, "FACART10");
+
+            entity.HasIndex(e => new { e.FarFecha, e.FarNumser, e.FarFbg, e.FarNumfac, e.FarCodclie, e.FarImpto, e.FarBruto, e.FarRuc, e.FarTotFlete, e.FarEstado2 }, "FACART1010");
+
+            entity.HasIndex(e => new { e.FarFecha, e.FarFbg, e.FarCodclie, e.FarCodart, e.FarTransito, e.FarEstado, e.FarSignoArm, e.FarCodven, e.FarEstado2, e.FarSubtotal }, "FACART14");
+
+            entity.HasIndex(e => new { e.FarTipmov, e.FarCodcia, e.FarFbg, e.FarNumserC, e.FarNumfacC }, "FACART15");
+
+            entity.HasIndex(e => new { e.FarFecha, e.FarNumoper }, "FACART16");
+
+            entity.HasIndex(e => e.FarNumfacC, "FACART17");
+
+            entity.HasIndex(e => new { e.FarCodcia, e.FarSerguia }, "FACART18");
+
+            entity.HasIndex(e => new { e.FarTipmov, e.FarCodcia, e.FarNumser, e.FarFbg, e.FarEstado, e.FarCp, e.FarNumfac }, "FACART22").IsDescending(false, false, false, false, false, false, true);
+
+            entity.HasIndex(e => new { e.FarTipmov, e.FarCodcia, e.FarCodart, e.FarEstado, e.FarCodven, e.FarEstado2, e.FarFechaCompra }, "FACART2222");
+
+            entity.HasIndex(e => new { e.FarCodcia, e.FarNumguia, e.FarSerguia, e.FarFbg, e.FarNumfac, e.FarEstado }, "FACART23");
+
+            entity.HasIndex(e => new { e.FarTipmov, e.FarCodcia, e.FarNumser, e.FarFbg, e.FarCp }, "FACART24");
+
+            entity.HasIndex(e => new { e.FarCodcia, e.FarNumguia, e.FarSerguia }, "FACART25");
+
+            entity.HasIndex(e => new { e.FarNumser, e.FarTipmov }, "FACART27");
+
+            entity.HasIndex(e => new { e.FarCodart, e.FarCodcia, e.FarEstado, e.FarSignoArm, e.FarCospro, e.FarFechaCompra, e.FarCantidad }, "FACART3");
+
+            entity.HasIndex(e => new { e.FarTipmov, e.FarCodcia, e.FarCodart, e.FarFechaCompra, e.FarEstado2, e.FarPrecio, e.FarEquiv, e.FarCantidad }, "FACART4");
+
+            entity.HasIndex(e => new { e.FarTipmov, e.FarCodcia, e.FarCodclie, e.FarCodart, e.FarEstado, e.FarNumser, e.FarNumfac, e.FarFbg, e.FarFecha, e.FarDias, e.FarEquiv, e.FarLitro, e.FarCantidad, e.FarDescri, e.FarSubtotal }, "FACART5");
+
+            entity.HasIndex(e => new { e.FarCodcia, e.FarFechaCompra, e.FarCodart, e.FarEstado, e.FarCosteo, e.FarCosteoReal }, "FACART9");
+
+            entity.HasIndex(e => new { e.FarFbg, e.FarFecha, e.FarNumserC, e.FarNumfacC }, "INDEX_FACART");
+
+            entity.HasIndex(e => new { e.FarCodcia, e.FarCodclie, e.FarCp, e.FarKeyDircli }, "IX_DELETE_DIR");
+
+            entity.HasIndex(e => e.FarFecha, "IX_FACART_FECHAS");
+
+            entity.HasIndex(e => new { e.FarTipmov, e.FarCodcia, e.FarNumsec, e.FarTransito, e.FarEstado, e.FarNumserC, e.FarNumfacC }, "IX_UPDATE_CANTIDAD");
+
+            entity.HasIndex(e => new { e.FarCodcia, e.FarFecha, e.FarTipmov, e.FarEstado, e.FarEstado2, e.FarFbg, e.FarNumfac, e.FarNumsec, e.FarNumser, e.FarCp, e.FarCodart }, "_dta_index_FACART_5_933578364__K2_K7_K1_K12_K78_K4_K5_K6_K3_K31_K10_16_24");
+
+            entity.HasIndex(e => new { e.FarIdcampmif, e.FarCodcia, e.FarFbg, e.FarNumfac, e.FarNumsec, e.FarNumser, e.FarTipmov, e.FarFechaCompra, e.FarEstado, e.FarCp, e.FarEstado2, e.FarCodart, e.FarCodclie }, "_dta_index_FACART_5_933578364__K90_K2_K4_K5_K6_K3_K1_K46_K12_K31_K78_K10_K9_14_16_24_42_48_79_92_94");
+
+            entity.HasIndex(e => new { e.FarCodart, e.FarFecha, e.FarCodcia, e.FarEstado, e.FarTransito, e.FarEstado2, e.FarFechaCompra, e.FarHora }, "kardex").IsDescending(false, false, false, false, false, false, true, false);
+
+            entity.HasIndex(e => new { e.FarCodcia, e.FarFbg, e.FarNumfac, e.FarNumsec, e.FarNumser, e.FarTipmov, e.FarCp }, "notacred");
+
+            entity.Property(e => e.FarCodcia)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_CODCIA");
+            entity.Property(e => e.FarFbg)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_FBG");
+            entity.Property(e => e.FarNumfac)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("FAR_NUMFAC");
+            entity.Property(e => e.FarNumsec).HasColumnName("FAR_NUMSEC");
+            entity.Property(e => e.FarNumser)
+                .HasMaxLength(3)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_NUMSER");
+            entity.Property(e => e.FarTipmov).HasColumnName("FAR_TIPMOV");
+            entity.Property(e => e.FarBruto)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("FAR_BRUTO");
+            entity.Property(e => e.FarCantidad)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(13, 4)")
+                .HasColumnName("FAR_CANTIDAD");
+            entity.Property(e => e.FarCantidadP)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(13, 4)")
+                .HasColumnName("FAR_CANTIDAD_P");
+            entity.Property(e => e.FarCliente)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_CLIENTE");
+            entity.Property(e => e.FarCodSunat)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_COD_SUNAT");
+            entity.Property(e => e.FarCodart)
+                .HasColumnType("numeric(8, 0)")
+                .HasColumnName("FAR_CODART");
+            entity.Property(e => e.FarCodartRef)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(8, 0)")
+                .HasColumnName("FAR_CODART_REF");
+            entity.Property(e => e.FarCodcampmif)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasDefaultValue("")
+                .HasColumnName("FAR_CODCAMPMIF");
+            entity.Property(e => e.FarCodclie)
+                .HasColumnType("numeric(8, 0)")
+                .HasColumnName("FAR_CODCLIE");
+            entity.Property(e => e.FarCodlot)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_CODLOT");
+            entity.Property(e => e.FarCodmifP)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValue("0")
+                .IsFixedLength()
+                .HasColumnName("FAR_CODMIF_P");
+            entity.Property(e => e.FarCodusu)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_CODUSU");
+            entity.Property(e => e.FarCodven)
+                .HasDefaultValue(0)
+                .HasColumnName("FAR_CODVEN");
+            entity.Property(e => e.FarConcepto)
+                .HasMaxLength(80)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_CONCEPTO");
+            entity.Property(e => e.FarCospro)
+                .HasColumnType("numeric(13, 4)")
+                .HasColumnName("FAR_COSPRO");
+            entity.Property(e => e.FarCosproAnt)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(13, 4)")
+                .HasColumnName("FAR_COSPRO_ANT");
+            entity.Property(e => e.FarCosproSup)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(13, 4)")
+                .HasColumnName("FAR_COSPRO_SUP");
+            entity.Property(e => e.FarCosteo)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_COSTEO");
+            entity.Property(e => e.FarCosteoReal)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_COSTEO_REAL");
+            entity.Property(e => e.FarCp)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValue(" ")
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_CP");
+            entity.Property(e => e.FarDescri)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_DESCRI");
+            entity.Property(e => e.FarDescto)
+                .HasColumnType("numeric(7, 2)")
+                .HasColumnName("FAR_DESCTO");
+            entity.Property(e => e.FarDias).HasColumnName("FAR_DIAS");
+            entity.Property(e => e.FarDircli)
+                .HasMaxLength(80)
+                .IsUnicode(false)
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_DIRCLI");
+            entity.Property(e => e.FarDirguia)
+                .HasDefaultValue(0)
+                .HasColumnName("FAR_DIRGUIA");
+            entity.Property(e => e.FarDoccli)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_DOCCLI");
+            entity.Property(e => e.FarDsctomif)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(13, 4)")
+                .HasColumnName("FAR_DSCTOMIF");
+            entity.Property(e => e.FarEquiv)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("FAR_EQUIV");
+            entity.Property(e => e.FarEstado)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValue("N")
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_ESTADO");
+            entity.Property(e => e.FarEstado2)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_ESTADO2");
+            entity.Property(e => e.FarExIgv)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_EX_IGV");
+            entity.Property(e => e.FarFacturacionIgv)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_FACTURACION_IGV");
+            entity.Property(e => e.FarFecha)
+                .HasColumnType("datetime")
+                .HasColumnName("FAR_FECHA");
+            entity.Property(e => e.FarFechaCan)
+                .HasColumnType("datetime")
+                .HasColumnName("FAR_FECHA_CAN");
+            entity.Property(e => e.FarFechaCompra)
+                .HasColumnType("datetime")
+                .HasColumnName("FAR_FECHA_COMPRA");
+            entity.Property(e => e.FarFechaLot)
+                .HasColumnType("datetime")
+                .HasColumnName("FAR_FECHA_LOT");
+            entity.Property(e => e.FarFechaPro)
+                .HasColumnType("datetime")
+                .HasColumnName("FAR_FECHA_PRO");
+            entity.Property(e => e.FarFlagSo)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_FLAG_SO");
+            entity.Property(e => e.FarFlete)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("FAR_FLETE");
+            entity.Property(e => e.FarGastos)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("FAR_GASTOS");
+            entity.Property(e => e.FarHora)
+                .HasMaxLength(12)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_HORA");
+            entity.Property(e => e.FarIdcampmif)
+                .HasDefaultValue(0)
+                .HasColumnName("FAR_IDCAMPMIF");
+            entity.Property(e => e.FarImpto)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("FAR_IMPTO");
+            entity.Property(e => e.FarJabas)
+                .HasDefaultValue(0)
+                .HasColumnName("FAR_JABAS");
+            entity.Property(e => e.FarKeyDircli).HasColumnName("FAR_KEY_DIRCLI");
+            entity.Property(e => e.FarLimcreAct)
+                .HasColumnType("numeric(9, 2)")
+                .HasColumnName("FAR_LIMCRE_ACT");
+            entity.Property(e => e.FarLimcreAnt)
+                .HasColumnType("numeric(9, 2)")
+                .HasColumnName("FAR_LIMCRE_ANT");
+            entity.Property(e => e.FarLitro)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 3)")
+                .HasColumnName("FAR_LITRO");
+            entity.Property(e => e.FarMoneda)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValue("S")
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_MONEDA");
+            entity.Property(e => e.FarMortal)
+                .HasDefaultValue(0)
+                .HasColumnName("FAR_MORTAL");
+            entity.Property(e => e.FarNumLote)
+                .HasDefaultValue(0)
+                .HasColumnName("FAR_NUM_LOTE");
+            entity.Property(e => e.FarNumPrecio)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_NUM_PRECIO");
+            entity.Property(e => e.FarNumdoc)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("FAR_NUMDOC");
+            entity.Property(e => e.FarNumfacC)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("FAR_NUMFAC_C");
+            entity.Property(e => e.FarNumguia)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("FAR_NUMGUIA");
+            entity.Property(e => e.FarNumoper).HasColumnName("FAR_NUMOPER");
+            entity.Property(e => e.FarNumoper2)
+                .HasDefaultValue((short)0)
+                .HasColumnName("FAR_NUMOPER2");
+            entity.Property(e => e.FarNumserC)
+                .HasMaxLength(3)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_NUMSER_C");
+            entity.Property(e => e.FarOc)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_OC");
+            entity.Property(e => e.FarOrdenUnidades)
+                .HasDefaultValue(0)
+                .HasColumnName("FAR_ORDEN_UNIDADES");
+            entity.Property(e => e.FarOtraCia)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_OTRA_CIA");
+            entity.Property(e => e.FarPedfac)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("FAR_PEDFAC");
+            entity.Property(e => e.FarPedsec)
+                .HasDefaultValue(0)
+                .HasColumnName("FAR_PEDSEC");
+            entity.Property(e => e.FarPedser)
+                .HasDefaultValue(0)
+                .HasColumnName("FAR_PEDSER");
+            entity.Property(e => e.FarPeso)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(13, 4)")
+                .HasColumnName("FAR_PESO");
+            entity.Property(e => e.FarPordescto1)
+                .HasColumnType("numeric(11, 3)")
+                .HasColumnName("FAR_PORDESCTO1");
+            entity.Property(e => e.FarPordesctos)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .HasDefaultValueSql("(0)")
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_PORDESCTOS");
+            entity.Property(e => e.FarPrecio)
+                .HasColumnType("numeric(13, 4)")
+                .HasColumnName("FAR_PRECIO");
+            entity.Property(e => e.FarPrecioNeto)
+                .HasColumnType("numeric(11, 4)")
+                .HasColumnName("FAR_PRECIO_NETO");
+            entity.Property(e => e.FarRuc)
+                .HasMaxLength(12)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_RUC");
+            entity.Property(e => e.FarSecmif)
+                .HasDefaultValue(0)
+                .HasColumnName("FAR_SECMIF");
+            entity.Property(e => e.FarSerguia)
+                .HasDefaultValue((short)0)
+                .HasColumnName("FAR_SERGUIA");
+            entity.Property(e => e.FarSignoArm).HasColumnName("FAR_SIGNO_ARM");
+            entity.Property(e => e.FarSignoCar)
+                .HasDefaultValue(0)
+                .HasColumnName("FAR_SIGNO_CAR");
+            entity.Property(e => e.FarSignoLot)
+                .HasDefaultValue(0)
+                .HasColumnName("FAR_SIGNO_LOT");
+            entity.Property(e => e.FarStock)
+                .HasColumnType("numeric(13, 4)")
+                .HasColumnName("FAR_STOCK");
+            entity.Property(e => e.FarSubtotal)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(13, 2)")
+                .HasColumnName("FAR_SUBTOTAL");
+            entity.Property(e => e.FarSubtra)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_SUBTRA");
+            entity.Property(e => e.FarTipdoc)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasDefaultValue(" ")
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_TIPDOC");
+            entity.Property(e => e.FarTipoBloqAct1)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_TIPO_BLOQ_ACT1");
+            entity.Property(e => e.FarTipoBloqAnt1)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_TIPO_BLOQ_ANT1");
+            entity.Property(e => e.FarTipoBloqAnt2)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_TIPO_BLOQ_ANT2");
+            entity.Property(e => e.FarTipoCambio)
+                .HasColumnType("numeric(7, 5)")
+                .HasColumnName("FAR_TIPO_CAMBIO");
+            entity.Property(e => e.FarTotDescto)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("FAR_TOT_DESCTO");
+            entity.Property(e => e.FarTotFlete)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(11, 2)")
+                .HasColumnName("FAR_TOT_FLETE");
+            entity.Property(e => e.FarTransito)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS")
+                .HasColumnName("FAR_TRANSITO");
+            entity.Property(e => e.FarTurno)
+                .HasDefaultValue((short)0)
+                .HasColumnName("FAR_TURNO");
+            entity.Property(e => e.FarUnidades)
+                .HasDefaultValue(0m)
+                .HasColumnType("numeric(9, 0)")
+                .HasColumnName("FAR_UNIDADES");
+            entity.Property(e => e.Iddocumento).HasColumnName("iddocumento");
+            entity.Property(e => e.SaldoCantidad).HasColumnType("numeric(13, 4)");
         });
 
         modelBuilder.Entity<Pedidoapp>(entity =>

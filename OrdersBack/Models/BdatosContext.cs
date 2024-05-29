@@ -925,6 +925,7 @@ public partial class BdatosContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false);
             entity.Property(e => e.Igv).HasColumnType("decimal(12, 2)");
+            entity.Property(e => e.KeyProd).HasColumnType("numeric(8, 0)");
             entity.Property(e => e.PrecDscto).HasColumnType("decimal(12, 4)");
             entity.Property(e => e.Precio).HasColumnType("decimal(12, 4)");
             entity.Property(e => e.Subtotal).HasColumnType("decimal(12, 2)");

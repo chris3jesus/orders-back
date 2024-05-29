@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using NuGet.Configuration;
 using OrdersBack.Models;
 using System.Text.Json.Serialization;
 
@@ -11,6 +12,11 @@ builder.Services.AddControllers();
 builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // builder.Services.AddDbContext<BdatosContext>(opt => opt.UseSqlServer("Server=localhost;Database=BDATOS;Trusted_Connection=true;TrustServerCertificate=True;"));
 builder.Services.AddDbContext<BdatosContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("bDatos")));
+
+// HttpClient
+builder.Services.AddHttpClient();
+// Registrar acceso a la configuración de ApiSettings
+builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -32,3 +38,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public class ApiSettings
+{
+    public string SunatApiKey { get; set; }
+}

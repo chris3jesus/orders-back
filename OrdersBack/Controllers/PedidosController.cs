@@ -114,7 +114,9 @@ namespace OrdersBack.Controllers
                                 PrecDscto = Math.Round(valor * 1.18m * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m), 4),
                                 Subtotal = Math.Round(valor * detalle.Cantidad * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m), 2),
                                 Igv = Math.Round(valor * detalle.Cantidad * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m) * 0.18m, 2),
-                                Total = Math.Round(valor * detalle.Cantidad * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m) * 1.18m, 2)
+                                Total = Math.Round(valor * detalle.Cantidad * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m) * 1.18m, 2),
+
+                                KeyProd = precio.PreCodart
                             };
 
                             subtotalPedido += nuevoDetalle.Subtotal;
@@ -190,6 +192,8 @@ namespace OrdersBack.Controllers
                             detalle.Subtotal = Math.Round(detalle.Valor * detalle.Cantidad * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m), 2);
                             detalle.Igv = Math.Round(detalle.Valor * detalle.Cantidad * (1 - detalle.Dscto1 / 100m) * (1 - detalle.Dscto2 / 100m) * 0.18m, 2);
                             detalle.Total = Math.Round(detalle.PrecDscto * detalle.Cantidad, 2);
+
+                            detalle.KeyProd = precio.PreCodart;
 
                             subtotalPedido += detalle.Subtotal;
                             igvPedido += detalle.Igv;

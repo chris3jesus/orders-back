@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using OrdersBack.DTOs;
 using Microsoft.Extensions.Options;
 
@@ -56,5 +54,38 @@ namespace OrdersBack.Controllers
             }
         }
 
+        // GET: api/sunat/dni/5
+        [HttpGet("dni/{doc}")]
+        public async Task<ActionResult<SunatDTO>> GetClienteDni(string doc)
+        {
+            try
+            {
+                var requestUrl = $"https://dniruc.apisperu.com/api/v1/dni/{doc}?token={_apiKey}";
+                var response = await _httpClient.GetAsync(requestUrl);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return StatusCode((int)response.StatusCode, $"Error al obtener los datos: {response.ReasonPhrase}");
+                }
+
+                var content = await response.Content.ReadAsStringAsync();
+                var jsonResponse = JsonConvert.DeserializeObject<JObject>(content);
+
+                var sunatData = new SunatDTO
+                {
+                    Documento = jsonResponse["dni"]?.ToString(),
+                    Comercial = jsonResponse["nombres"]?.ToString() + " " + jsonResponse["apellidoPaterno"]?.ToString() + " " + jsonResponse["apellidoMaterno"]?.ToString(),
+                    Estado = "ACTIVO",
+                    Domicilio = "",
+                    FechaConsulta = DateTime.Today
+                };
+
+                return Ok(sunatData);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error al obtener los datos: {ex.Message}");
+            }
+        }
     }
 }

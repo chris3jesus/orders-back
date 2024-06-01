@@ -96,4 +96,6 @@ public partial class Vemaest
     public DateTime? VemFechaAuto { get; set; }
 
     public string? Clave { get; set; }
+
+    public bool? Supervisor { get; set; }
 }

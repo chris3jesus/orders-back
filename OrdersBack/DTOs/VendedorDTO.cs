@@ -5,5 +5,6 @@
         public int Codigo { get; set; }
         public string? Nombre { get; set; }
         public string? Clave { get; set; }
+        public bool? Supervisor { get; set; }
     }
 }

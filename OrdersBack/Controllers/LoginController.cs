@@ -66,7 +66,8 @@ namespace OrdersBack.Controllers
             {
                 Codigo = vendedor.VemCodven,
                 Nombre = vendedor.VemNombre.Trim(),
-                Clave = vendedor.Clave
+                Clave = vendedor.Clave,
+                Supervisor = vendedor.Supervisor
             };
         }
     }

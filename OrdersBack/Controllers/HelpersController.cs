@@ -22,7 +22,7 @@ namespace OrdersBack.Controllers
 
             if (cliente != null)
             {
-                return Ok(new { Cliente = id + " - " + cliente.CliNombreEmpresa.Trim() });
+                return Ok(new { Message = id + " - " + cliente.CliNombreEmpresa.Trim() });
             }
 
             return Ok(new { Message = "Cliente no existe" });
@@ -36,7 +36,7 @@ namespace OrdersBack.Controllers
 
             if (vendedor != null)
             {
-                return Ok(new { Vendedor = id + " - " + vendedor.VemNombre.Trim() });
+                return Ok(new { Message = id + " - " + vendedor.VemNombre.Trim() });
             }
 
             return Ok(new { Message = "Vendedor no existe" });
@@ -46,7 +46,7 @@ namespace OrdersBack.Controllers
         [HttpGet("fecha")]
         public IActionResult GetFecha()
         {
-            return Ok(new { Fecha = DateTime.Now });
+            return Ok(new { Message = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") });
         }
 
         // GET: api/helpers
